@@ -3,64 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lecture YouTube en direct au chargement</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      align-items: center;
-      background: #f0f0f0;
-    }
-    .container {
-      width: min(1200px, 95%);
-      text-align: center;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-top: 40px;
-      margin-bottom: 40px;
-    }
-    h1 { margin: 0 0 12px; }
-    p { margin: 8px 0; }
-    .video-wrap {
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%; /* 16:9 */
-      height: 0;
-    }
-    .video-wrap iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: 0;
-    }
-    /* Zone pour le défilement de texte longue page */
-    .content {
-      height: 1800px; /* simule un contenu long; ajustez selon besoin */
-      padding: 16px;
-    }
-  </style>
+  <title>Lecture YouTube en direct - séparé</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
+  <main class="container">
     <h1>Lecture YouTube en direct au chargement</h1>
-    <p>Le texte long ci-dessous déclenche la lecture automatique lorsque vous atteignez la fin du texte.</p>
+    <p>La vidéo se lit automatiquement dès l’ouverture de la page (avec le son si possible).</p>
 
-    <div class="content" id="content">
-      <!-- Contenu textuel simulé -->
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac arcu nec arcu luctus efficitur. Integer nec lectus a velit bibendum posuere. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec vel nisl vel arcu ultricies pulvinar. Mauris nec arcu ac arcu efficitur bibendum. Sed non arcu vel arcu facilisis pulvinar. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer at est nec ipsum varius bibendum.</p>
-      <!-- Ajoutez davantage de texte si nécessaire pour tester le défilement -->
-      <p>… (texte supplémentaire pour permettre le défilement) …</p>
-      <p>Fin du contenu.</p>
-    </div>
-
-    <div class="video-wrap" aria-label="Lecture YouTube intégrée">
-      <!-- Vidéo YouTube: 94ztx5GzdXU -->
+    <div class="video-wrap">
       <iframe
         id="ytplayer"
         src="https://www.youtube.com/embed/94ztx5GzdXU?autoplay=1&mute=1&enablejsapi=1"
@@ -76,50 +27,8 @@
         https://www.youtube.com/watch?v=94ztx5GzdXU
       </a>
     </p>
-  </div>
+  </main>
 
-  <script>
-    // Déclencheur d'autoplay lorsque le bas du contenu est visible
-    (function() {
-      const iframe = document.getElementById('ytplayer');
-      const playerOrigin = 'https://www.youtube.com';
-      // Assure l'API est prête
-      function postMessageToPlayer(cmd, data) {
-        iframe.contentWindow.postMessage(JSON.stringify({
-          event: 'command',
-          func: cmd,
-          args: data || []
-        }), playerOrigin);
-      }
-
-      // Vérifie que l'iframe est bien prête avant d'envoyer des commandes
-      function ensureApiReady() {
-        // La plupart des navigateurs nécessitent une interaction utilisateur avant autoplay.
-        // Ici, on déclenche simplement une lecture lorsque l'élément est visible.
-        postMessageToPlayer('playVideo');
-      }
-
-      // Intersection Observer sur le bas du contenu
-      const content = document.getElementById('content');
-      const options = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.95 // déclenche quand 95% du contenu est visible
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            // Lorsque le bas du contenu est atteint, lancer la video
-            ensureApiReady();
-            // On peut désactiver l'observer après déclenchement
-            observer.unobserve(content);
-          }
-        });
-      }, options);
-
-      observer.observe(content);
-    })();
-  </script>
+  <script src="scripts.js"></script>
 </body>
 </html>
